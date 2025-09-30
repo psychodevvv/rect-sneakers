@@ -274,7 +274,7 @@ header {
     display: flex;
     justify-content: start;
     flex-wrap: wrap;
-    gap: 42px;
+    gap: 45px;
 }
 
 .card {

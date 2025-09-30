@@ -130,7 +130,7 @@ header {
     transition: 0.4s all ease;
 }
 
-.not-buy {
+.not-favorite {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -138,18 +138,18 @@ header {
     padding: 233px 480px 328px 480px;
 }
 
-.not-buy img {
+.not-favorite img {
     width: 100px;
     margin-bottom: 31px;
 }
 
-.not-buy h1 {
+.not-favorite h1 {
     font-weight: 600;
     font-size: 32px;
     margin-bottom: 11px;
 }
 
-.not-buy p {
+.not-favorite p {
     font-weight: 400;
     color: #5C5C5C;
     text-align: center;
@@ -293,4 +293,96 @@ header {
 
 .hidden {
   display: none;
+}
+
+.favorite-cards {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    gap: 45px;
+}
+
+.card {
+    border: 2px solid #5c5c5c1f;
+    padding: 41px;
+    display: flex;
+    flex-direction: column;
+    width: 265px;
+    gap: 16px;
+    border-radius: 40px;
+    transition: 0.4s all ease;
+    background-color: #dbdbdb4b;
+}
+
+.card img {
+    border-radius: 10px;
+}
+
+.card:hover {
+    border: 2px solid #A5D364;
+}
+
+.favorite-status {
+    position: absolute;
+    width: 42px;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.20);
+    transition: 0.3s all ease;
+}
+
+.favorite-status:hover {
+    box-shadow: 0 0 12px #A5D364;
+}
+
+.card h1 {
+    font-weight: 400;
+    font-size: 24px;
+}
+
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-status {
+    width: 42px;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.20);
+    transition: 0.3s all ease;
+}
+
+.cart-status:hover {
+    box-shadow: 0 0 12px #A5D364;
+}
+
+.card-info span {
+    color: #5C5C5C;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.card-info p {
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.favorite-head {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.goback img {
+    width: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px #00000042;
+    transition: 0.4s all ease;
+    cursor: pointer;
+}
+
+.goback:hover img {
+    box-shadow: 0 0 12px #A5D364;
 }

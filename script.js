@@ -118,55 +118,59 @@ const cartTotalEl = document.querySelector('.cart-total');
 const cartTaxEl = document.querySelector('.cart-tax');
 const headerCart = document.querySelector('.right-header2');
 
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
+const favSection = document.querySelector('.favorite-cards');
+const notFav = document.querySelector('.not-favorite');
+const favHead = document.querySelector('.favorite-head');
 
-function saveCart() {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
+function saveFavorites() { localStorage.setItem('favorites', JSON.stringify(favorites)); }
 
 function openCart() {
+    if (!cartOverlay || !cartModal) return;
     cartOverlay.classList.remove('hidden');
     cartModal.classList.remove('hidden');
     renderCart();
 }
 function closeCart() {
+    if (!cartOverlay || !cartModal) return;
     cartOverlay.classList.add('hidden');
     cartModal.classList.add('hidden');
 }
-cartOverlay.addEventListener('click', closeCart);
+if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
+if (headerCart) headerCart.addEventListener('click', openCart);
 
 function addToCart(product) {
     cart.push(product);
     saveCart();
     updateCartHeader();
     renderCart();
-    updateCartIcons();
+    renderSneakers(sneakers);
+    renderFavorites();
 }
-
 function removeFromCart(id) {
     cart = cart.filter(item => item.id !== id);
     saveCart();
     updateCartHeader();
     renderCart();
-    updateCartIcons();
+    renderSneakers(sneakers);
+    renderFavorites();
 }
 
 function updateCartHeader() {
     const balanceEl = document.getElementById('balance');
     if (!balanceEl) return;
-
-    const total = cart.reduce(
-        (sum, item) => sum + parseInt(item.price.replace(/\s/g, ''), 10),
-        0
-    );
+    const total = cart.reduce((sum, item) => sum + parseInt(item.price.replace(/\s/g, ''), 10), 0);
     balanceEl.textContent = `${total} руб.`;
 }
-
 document.addEventListener('DOMContentLoaded', updateCartHeader);
 
 function renderCart() {
-    cartItemsContainer.innerHTML = '';
+    if (!cartItemsContainer || !cartTotalEl || !cartTaxEl) return;
 
+    cartItemsContainer.innerHTML = '';
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="pusto-cart">Корзина пуста</p>';
         cartTotalEl.textContent = '0 руб.';
@@ -182,23 +186,19 @@ function renderCart() {
                     <div class="cart-item-title">${item.title}</div>
                     <div class="cart-item-price">${item.price} руб.</div>
                 </div>
-                <div class="cart-item-remove" onclick="removeFromCart(${item.id})">
-                    <div class="cart-item-remove" onclick="removeFromCart(${item.id})">×</div>
-                </div>
+                <div class="cart-item-remove" onclick="removeFromCart(${item.id})">×</div>
             </div>
         `);
     });
 
     const total = cart.reduce((sum, item) => sum + parseInt(item.price.replace(/\s/g, ''), 10), 0);
     const tax = Math.floor(total * 0.05);
-
     cartTotalEl.textContent = `${total} руб.`;
     cartTaxEl.textContent = `${tax} руб.`;
 }
 
-headerCart.addEventListener('click', openCart);
-
 function renderSneakers(list) {
+    if (!cards) return;
     cards.innerHTML = '';
 
     if (list.length === 0) {
@@ -206,10 +206,13 @@ function renderSneakers(list) {
         return;
     }
 
-    list.forEach((item) => {
+    list.forEach(item => {
+        const inFav = favorites.find(f => f.id === item.id);
+        const inCart = cart.find(c => c.id === item.id);
+
         cards.insertAdjacentHTML('beforeend', `
             <div class="card" data-id="${item.id}">
-                <img class="favorite-status" src="assets/favorite-minus.svg" alt="favorite-status">
+                <img class="favorite-status" src="assets/${inFav ? 'favorite-plus.svg' : 'favorite-minus.svg'}" alt="favorite-status">
                 <img src="${item.img}" alt="sneaker">
                 <h1>${item.title}</h1>
                 <div class="card-bottom">
@@ -217,52 +220,82 @@ function renderSneakers(list) {
                         <span>ЦЕНА:</span>
                         <p>${item.price} руб.</p>
                     </div>
-                    <img class="cart-status" src="assets/cart-minus.svg" alt="cart-status">
+                    <img class="cart-status" src="assets/${inCart ? 'cart-plus.svg' : 'cart-minus.svg'}" alt="cart-status">
                 </div>
             </div>
         `);
     });
-
-    updateCartIcons();
 }
 
-function updateCartIcons() {
-    document.querySelectorAll('.card').forEach(card => {
-        let id = card.getAttribute('data-id');
-        let cartIcon = card.querySelector('.cart-status');
-        let inCart = cart.find(item => item.id == id);
-        if (inCart) {
-            cartIcon.src = 'assets/cart-plus.svg';
-        } else {
-            cartIcon.src = 'assets/cart-minus.svg';
-        }
+function renderFavorites() {
+    if (!favSection || !notFav || !favHead) return;
+
+    favSection.innerHTML = '';
+    if (favorites.length === 0) {
+        notFav.style.display = '';
+        favHead.style.display = 'none';
+        favSection.style.display = 'none';
+        return;
+    }
+
+    notFav.style.display = 'none';
+    favHead.style.display = '';
+    favSection.style.display = '';
+
+    favorites.forEach(item => {
+        const inCart = cart.find(c => c.id === item.id);
+        favSection.insertAdjacentHTML('beforeend', `
+            <div class="card" data-id="${item.id}">
+                <img class="favorite-status" src="assets/favorite-plus.svg" alt="favorite-status">
+                <img src="${item.img}" alt="sneaker">
+                <h1>${item.title}</h1>
+                <div class="card-bottom">
+                    <div class="card-info">
+                        <span>ЦЕНА:</span>
+                        <p>${item.price} руб.</p>
+                    </div>
+                    <img class="cart-status" src="assets/${inCart ? 'cart-plus.svg' : 'cart-minus.svg'}" alt="cart-status">
+                </div>
+            </div>
+        `);
     });
 }
 
-cards.addEventListener('click', (e) => {
-    if (e.target.classList.contains('cart-status')) {
-        let card = e.target.closest('.card');
-        let id = Number(card.getAttribute('data-id'));
-        let title = card.querySelector('h1').textContent;
-        let price = card.querySelector('.card-info p').textContent.replace(' руб.', '');
-        let img = card.querySelector('img:nth-child(2)').getAttribute('src');
+document.addEventListener('click', (e) => {
+    let card = e.target.closest('.card');
+    if (!card) return;
 
+    let id = Number(card.getAttribute('data-id'));
+    let title = card.querySelector('h1').textContent;
+    let price = card.querySelector('.card-info p').textContent.replace(' руб.', '');
+    let img = card.querySelector('img:nth-child(2)').getAttribute('src');
+
+    if (e.target.classList.contains('cart-status')) {
         let inCart = cart.find(item => item.id === id);
-        if (inCart) {
-            removeFromCart(id);
-        } else {
-            addToCart({ id, title, price, img });
-        }
+        if (inCart) removeFromCart(id);
+        else addToCart({ id, title, price, img });
+    }
+
+    if (e.target.classList.contains('favorite-status')) {
+        let inFav = favorites.find(item => item.id === id);
+        if (inFav) favorites = favorites.filter(item => item.id !== id);
+        else favorites.push({ id, title, price, img });
+
+        saveFavorites();
+        renderSneakers(sneakers);
+        renderFavorites();
     }
 });
 
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value.toLowerCase().trim();
-    const filtered = sneakers.filter(item => item.title.toLowerCase().includes(query));
-    renderSneakers(filtered);
-});
+if (searchInput && cards) {
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        const filtered = sneakers.filter(item => item.title.toLowerCase().includes(query));
+        renderSneakers(filtered);
+    });
+}
 
 renderSneakers(sneakers);
 updateCartHeader();
 renderCart();
-updateCartIcons();
+renderFavorites();
