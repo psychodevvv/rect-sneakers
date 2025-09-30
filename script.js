@@ -117,16 +117,17 @@ const cartItemsContainer = document.querySelector('.cart-items');
 const cartTotalEl = document.querySelector('.cart-total');
 const cartTaxEl = document.querySelector('.cart-tax');
 const headerCart = document.querySelector('.right-header2');
-
 const favSection = document.querySelector('.favorite-cards');
 const notFav = document.querySelector('.not-favorite');
 const favHead = document.querySelector('.favorite-head');
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
 
 function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
 function saveFavorites() { localStorage.setItem('favorites', JSON.stringify(favorites)); }
+function saveOrders() { localStorage.setItem('orders', JSON.stringify(orders)); }
 
 function openCart() {
     if (!cartOverlay || !cartModal) return;
@@ -169,7 +170,6 @@ document.addEventListener('DOMContentLoaded', updateCartHeader);
 
 function renderCart() {
     if (!cartItemsContainer || !cartTotalEl || !cartTaxEl) return;
-
     cartItemsContainer.innerHTML = '';
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="pusto-cart">Корзина пуста</p>';
@@ -177,7 +177,6 @@ function renderCart() {
         cartTaxEl.textContent = '0 руб.';
         return;
     }
-
     cart.forEach(item => {
         cartItemsContainer.insertAdjacentHTML('beforeend', `
             <div class="cart-item">
@@ -190,7 +189,6 @@ function renderCart() {
             </div>
         `);
     });
-
     const total = cart.reduce((sum, item) => sum + parseInt(item.price.replace(/\s/g, ''), 10), 0);
     const tax = Math.floor(total * 0.05);
     cartTotalEl.textContent = `${total} руб.`;
@@ -200,16 +198,13 @@ function renderCart() {
 function renderSneakers(list) {
     if (!cards) return;
     cards.innerHTML = '';
-
     if (list.length === 0) {
         cards.insertAdjacentHTML('beforeend', `<div class="not-found">Товар не найден...</div>`);
         return;
     }
-
     list.forEach(item => {
         const inFav = favorites.find(f => f.id === item.id);
         const inCart = cart.find(c => c.id === item.id);
-
         cards.insertAdjacentHTML('beforeend', `
             <div class="card" data-id="${item.id}">
                 <img class="favorite-status" src="assets/${inFav ? 'favorite-plus.svg' : 'favorite-minus.svg'}" alt="favorite-status">
@@ -229,7 +224,6 @@ function renderSneakers(list) {
 
 function renderFavorites() {
     if (!favSection || !notFav || !favHead) return;
-
     favSection.innerHTML = '';
     if (favorites.length === 0) {
         notFav.style.display = '';
@@ -237,11 +231,9 @@ function renderFavorites() {
         favSection.style.display = 'none';
         return;
     }
-
     notFav.style.display = 'none';
     favHead.style.display = '';
     favSection.style.display = '';
-
     favorites.forEach(item => {
         const inCart = cart.find(c => c.id === item.id);
         favSection.insertAdjacentHTML('beforeend', `
@@ -261,26 +253,66 @@ function renderFavorites() {
     });
 }
 
+function renderOrders() {
+    const ordersContainer = document.querySelector('.orders-container');
+    const buysSection = document.querySelector('.buys');
+    const buyCards = document.querySelector('.buy-cards');
+    if (!ordersContainer || !buysSection || !buyCards) return;
+    buyCards.innerHTML = '';
+    if (orders.length === 0) {
+        ordersContainer.style.display = '';
+        buysSection.style.display = 'none';
+        return;
+    }
+    ordersContainer.style.display = 'none';
+    buysSection.style.display = '';
+    orders.forEach(item => {
+        buyCards.insertAdjacentHTML('beforeend', `
+            <div class="card" data-id="${item.id}">
+                <img src="${item.img}" alt="sneaker">
+                <h1>${item.title}</h1>
+                <div class="card-bottom">
+                    <div class="card-info">
+                        <span>ЦЕНА:</span>
+                        <p>${item.price} руб.</p>
+                    </div>
+                </div>
+            </div>
+        `);
+    });
+}
+
+function checkout() {
+    if (cart.length === 0) return;
+    orders = [...orders, ...cart];
+    saveOrders();
+    cart = [];
+    saveCart();
+    updateCartHeader();
+    renderCart();
+    renderSneakers(sneakers);
+    renderFavorites();
+    renderOrders();
+    closeCart();
+}
+
 document.addEventListener('click', (e) => {
     let card = e.target.closest('.card');
+    if (e.target.classList.contains('checkout-btn')) checkout();
     if (!card) return;
-
     let id = Number(card.getAttribute('data-id'));
     let title = card.querySelector('h1').textContent;
     let price = card.querySelector('.card-info p').textContent.replace(' руб.', '');
     let img = card.querySelector('img:nth-child(2)').getAttribute('src');
-
     if (e.target.classList.contains('cart-status')) {
         let inCart = cart.find(item => item.id === id);
         if (inCart) removeFromCart(id);
         else addToCart({ id, title, price, img });
     }
-
     if (e.target.classList.contains('favorite-status')) {
         let inFav = favorites.find(item => item.id === id);
         if (inFav) favorites = favorites.filter(item => item.id !== id);
         else favorites.push({ id, title, price, img });
-
         saveFavorites();
         renderSneakers(sneakers);
         renderFavorites();
@@ -299,3 +331,4 @@ renderSneakers(sneakers);
 updateCartHeader();
 renderCart();
 renderFavorites();
+renderOrders();
