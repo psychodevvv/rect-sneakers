@@ -15,7 +15,7 @@ const sneakers = [
         id: 1,
         title: 'Мужские Кроссовки Nike Blazer Mid Suede',
         price: '12 999',
-        img: '/assets/sneaker-1.png',
+        img: 'assets/sneaker-1.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -23,7 +23,7 @@ const sneakers = [
         id: 2,
         title: 'Мужские Кроссовки Nike Air Max 270',
         price: '12 999',
-        img: '/assets/sneaker-2.png',
+        img: './assets/sneaker-2.png',
         favoriteStatus: '',
         cartStatus: ''
     },
