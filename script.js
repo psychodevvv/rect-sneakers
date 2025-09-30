@@ -15,7 +15,7 @@ const sneakers = [
         id: 1,
         title: 'Мужские Кроссовки Nike Blazer Mid Suede',
         price: '12 999',
-        img: 'rect-sneakers/assets/sneaker-1.png',
+        img: 'assets/sneaker-1.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -23,7 +23,7 @@ const sneakers = [
         id: 2,
         title: 'Мужские Кроссовки Nike Air Max 270',
         price: '12 999',
-        img: 'rect-sneakers/assets/sneaker-2.png',
+        img: 'assets/sneaker-2.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -31,7 +31,7 @@ const sneakers = [
         id: 3,
         title: 'Мужские Кроссовки Nike Blazer Mid Suede',
         price: '8 499',
-        img: 'rect-sneakers/assets/sneaker-3.png',
+        img: 'assets/sneaker-3.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -39,7 +39,7 @@ const sneakers = [
         id: 4,
         title: 'Кроссовки Puma X Aka Boku Future Rider',
         price: '8 999',
-        img: 'rect-sneakers/assets/sneaker-4.png',
+        img: 'assets/sneaker-4.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -47,7 +47,7 @@ const sneakers = [
         id: 5,
         title: 'Мужские Кроссовки Under Armour Curry 8',
         price: '15 199',
-        img: 'rect-sneakers/assets/sneaker-5.png',
+        img: 'assets/sneaker-5.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -55,7 +55,7 @@ const sneakers = [
         id: 6,
         title: 'Мужские Кроссовки Nike Kyrie 7',
         price: '11 299',
-        img: 'rect-sneakers/assets/sneaker-6.png',
+        img: 'assets/sneaker-6.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -63,7 +63,7 @@ const sneakers = [
         id: 7,
         title: 'Мужские Кроссовки Jordan Air Jordan 11',
         price: '10 799',
-        img: 'rect-sneakers/assets/sneaker-7.png',
+        img: 'assets/sneaker-7.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -71,7 +71,7 @@ const sneakers = [
         id: 8,
         title: 'Мужские Кроссовки Nike LeBron XVIII',
         price: '16 499',
-        img: 'rect-sneakers/assets/sneaker-8.png',
+        img: 'assets/sneaker-8.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -79,7 +79,7 @@ const sneakers = [
         id: 9,
         title: 'Мужские Кроссовки Nike LeBron XVIII Low',
         price: '13 999',
-        img: 'rect-sneakers/assets/sneaker-9.png',
+        img: 'assets/sneaker-9.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -87,7 +87,7 @@ const sneakers = [
         id: 10,
         title: 'Мужские Кроссовки Nike Blazer Mid Suede',
         price: '8 499',
-        img: 'rect-sneakers/assets/sneaker-10.png',
+        img: 'assets/sneaker-10.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -95,7 +95,7 @@ const sneakers = [
         id: 11,
         title: 'Кроссовки Puma X Aka Boku Future Rider',
         price: '8 999',
-        img: 'rect-sneakers/assets/sneaker-11.png',
+        img: 'assets/sneaker-11.png',
         favoriteStatus: '',
         cartStatus: ''
     },
@@ -103,7 +103,7 @@ const sneakers = [
         id: 12,
         title: 'Мужские Кроссовки Nike Kyrie Flytrap IV',
         price: '11 299',
-        img: 'rect-sneakers/assets/sneaker-12.png',
+        img: 'assets/sneaker-12.png',
         favoriteStatus: '',
         cartStatus: ''
     }
@@ -209,7 +209,7 @@ function renderSneakers(list) {
     list.forEach((item) => {
         cards.insertAdjacentHTML('beforeend', `
             <div class="card" data-id="${item.id}">
-                <img class="favorite-status" src="rect-sneakers/assets/favorite-minus.svg" alt="favorite-status">
+                <img class="favorite-status" src="assets/favorite-minus.svg" alt="favorite-status">
                 <img src="${item.img}" alt="sneaker">
                 <h1>${item.title}</h1>
                 <div class="card-bottom">
@@ -217,7 +217,7 @@ function renderSneakers(list) {
                         <span>ЦЕНА:</span>
                         <p>${item.price} руб.</p>
                     </div>
-                    <img class="cart-status" src="rect-sneakers/assets/cart-minus.svg" alt="cart-status">
+                    <img class="cart-status" src="assets/cart-minus.svg" alt="cart-status">
                 </div>
             </div>
         `);
@@ -232,9 +232,9 @@ function updateCartIcons() {
         let cartIcon = card.querySelector('.cart-status');
         let inCart = cart.find(item => item.id == id);
         if (inCart) {
-            cartIcon.src = 'rect-sneakers/assets/cart-plus.svg';
+            cartIcon.src = 'assets/cart-plus.svg';
         } else {
-            cartIcon.src = 'rect-sneakers/assets/cart-minus.svg';
+            cartIcon.src = 'assets/cart-minus.svg';
         }
     });
 }
